@@ -4,14 +4,14 @@ var svgHeight = 500;
 
 var margin = {
   top: 20,
-  right: 50,
+  right: 60,
   bottom: 80,
   left: 60
 };
 
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
-
+console.log(width)
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
 var svg = d3.select("#scatter")
@@ -37,11 +37,14 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-      .domain(d3.extent(healthData, d => d.poverty))
+    .domain([d3.min(healthData, d => d.poverty*0.9), d3.max(healthData, d => d.poverty*1.1)])
       .range([0, width]);
+    // console.log(d3.min(healthData, d => d.poverty))
+    // console.log(d3.max(healthData, d => d.poverty))
 
     var yLinearScale = d3.scaleLinear()
-      .domain([0, d3.max(healthData, d => d.healthcare)])
+    .domain([d3.min(healthData, d => d.healthcare*0.5), d3.max(healthData, d => d.healthcare*1.1)])
+    // .domain([0, 26])
       .range([height, 0]);
 
     // Step 3: Create axis functions
@@ -67,18 +70,18 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     .attr("cx", d => xLinearScale(d.poverty))
     .attr("cy", d => yLinearScale(d.healthcare))
     .attr("r", "10")
+    .attr("class","stateCirlce")
     .attr("fill", "LightSteelBlue")
     .attr("stroke-width", "1")
-    // .attr("opacity", ".9")
-    .attr("stroke", "LightSteelBlue");
+    .attr("stroke", "white");
 
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-    .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
-      return (`<strong>Poverty:${d.poverty}%<hr>Healthcare:${d.healthcare}%<strong>`
+      return (`<strong>${d.state}<hr>Poverty:${d.poverty}%<hr>Healthcare:${d.healthcare}%<strong>`
       );
     });
 
@@ -102,12 +105,12 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
       .attr("y", 0 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
-      .attr("class", "axisText")
+      .attr("class", "aText")
       .text("Lacks Healthcare");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
-      .attr("class", "axisText")
+      .attr("class", "aText")
       .text("In Poverty (%)");
   }).catch(function(error) {
     console.log(error);
