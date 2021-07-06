@@ -25,9 +25,12 @@
 
 /* font size dependent on radius, see app.js */
 .stateText {
+  padding-top: 10px;
   font-family: sans-serif;
-  fill: #fff;
+  fill:#fff;
   text-anchor: middle;
+  font-size: 10px;
+
 }
 
 .stateCircle {
@@ -41,7 +44,7 @@
 }
 
 .d3-tip {
-  padding: 6px;
+  padding: 4px;
   font-size: 12px;
   line-height: 1;
   line-height: 1.5em;
